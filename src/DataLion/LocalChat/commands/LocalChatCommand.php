@@ -10,10 +10,25 @@ use pocketmine\plugin\Plugin;
 
 class LocalChatCommand extends PluginCommand
 {
+
+    public function __construct(string $name, Plugin $owner)
+    {
+        $this->setPermission("lc.command");
+        $this->setPermissionMessage("§cYou have no permission to use this command.");
+        parent::__construct($name, $owner);
+    }
+
     public function execute(CommandSender $sender, string $commandLabel, array $args)
     {
-        switch ($args[0]??""){
-            case "setradius":
+        $option = strtolower($args[0]??"");
+        switch ($option){
+            case"setradius":
+
+                // Checking Permission
+                if(!$sender->hasPermission($this->getPermission().".".$option)){
+                    $sender->sendMessage($this->getPermissionMessage());
+                    break;
+                }
 
                 // Checking if Argument 2 exists and is numeric
                 if(!isset($args[1]) || !is_numeric($args[1])){
@@ -35,12 +50,17 @@ class LocalChatCommand extends PluginCommand
 
             case "toggle":
 
+                // Checking Permission
+                if(!$sender->hasPermission($this->getPermission().".".$option)){
+                    $sender->sendMessage($this->getPermissionMessage());
+                    break;
+                }
                 // Getting and current Config value
                 $config = $this->getPlugin()->getConfig();
                 $enabled = $config->get("enabled");
 
                 // Setting and Saving Config
-                $config->set("radius", !$enabled);
+                $config->set("enabled", !$enabled);
                 $config->save();
 
                 if($enabled){
@@ -49,6 +69,11 @@ class LocalChatCommand extends PluginCommand
                     $sender->sendMessage("§aLocalChat Enabled.");
                 }
                 break;
+            default:
+                // Sending usage message
+                $sender->sendMessage("§2-- §aLocalChat Usage §2--");
+                $sender->sendMessage("§a/localchat setradius <radius>");
+                $sender->sendMessage("§a/localchat toggle");
         }
 
         return parent::execute($sender, $commandLabel, $args);
