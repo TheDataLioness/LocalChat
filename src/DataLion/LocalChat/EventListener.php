@@ -25,9 +25,14 @@ class EventListener implements Listener
         /** @var Player[] $newRecipents */
         $newRecipients = [];
 
-        // Loop trough all players in current World and add player if in radius
-        foreach ($player->getLevel()->getPlayers() as $levelPlayer){
-            if($player->distance($levelPlayer) <= $radius) $newRecipients[] = $levelPlayer;
+        // Loop trough all recipients and add player if in radius
+        foreach ($event->getRecipients() as $recipient){
+            if($recipient instanceof Player){
+                if($player->distance($recipient) <= $radius) $newRecipients[] = $recipient;
+            }else{
+                $newRecipients[] = $recipient;
+            }
+
         }
 
         // Setting new Recipients
