@@ -28,7 +28,7 @@ class EventListener implements Listener
         // Loop trough all recipients and add player if in radius
         foreach ($event->getRecipients() as $recipient){
             if($recipient instanceof Player){
-                if($player->distance($recipient) <= $radius) $newRecipients[] = $recipient;
+                if($player->distance($recipient) <= $radius && $recipient->getLevel() === $player->getLevel()) $newRecipients[] = $recipient;
             }else{
                 $newRecipients[] = $recipient;
             }
