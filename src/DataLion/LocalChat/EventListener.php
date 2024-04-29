@@ -1,18 +1,14 @@
 <?php
-
-
 namespace DataLion\LocalChat;
-
 
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
-use pocketmine\Player;
+use pocketmine\player\Player;
 
 class EventListener implements Listener
 {
-
-    public function onChat(PlayerChatEvent $event){
-
+    public function onChat(PlayerChatEvent $event): void
+    {
         // Getting Config
         $config = Main::getInstance()->getConfig();
 
@@ -25,16 +21,16 @@ class EventListener implements Listener
         /** @var Player[] $newRecipents */
         $newRecipients = [];
 
-        // Loop trough all recipients and add player if in radius
+        // Loop through all recipients and add player if in radius
         foreach ($event->getRecipients() as $recipient){
-            if($recipient instanceof Player){
-                if($player->distance($recipient) <= $radius && $recipient->getLevel() === $player->getLevel()) $newRecipients[] = $recipient;
+
+            if ($recipient instanceof Player) {
+                $recipientPosition = $recipient->getPosition();
+                if($player->getPosition()->distance($recipientPosition) <= $radius && $recipient->getWorld() === $player->getWorld()) $newRecipients[] = $recipient;
             }else{
                 $newRecipients[] = $recipient;
             }
-
         }
-
         // Setting new Recipients
         $event->setRecipients($newRecipients);
     }

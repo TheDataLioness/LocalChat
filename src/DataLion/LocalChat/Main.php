@@ -1,9 +1,7 @@
 <?php
-
 declare(strict_types=1);
 
 namespace DataLion\LocalChat;
-
 use DataLion\LocalChat\commands\LocalChatCommand;
 use pocketmine\plugin\PluginBase;
 use pocketmine\command\CommandSender;
@@ -12,8 +10,8 @@ use pocketmine\utils\Config;
 
 class Main extends PluginBase{
 
-    /** @var Main */
-    private static $instance;
+    /** @var ?Main */
+    public static ?Main $instance;
 
     /**
      * @return Main
@@ -22,10 +20,9 @@ class Main extends PluginBase{
     {
         return self::$instance;
     }
-
 	public function onEnable() : void{
 
-	    // Creating Static plugin instance variable to use pluginbase outside of main class
+	    // Creating Static plugin instance variable to use plugin base outside the main class
         self::$instance = $this;
 
 		// Register Commands
@@ -42,11 +39,9 @@ class Main extends PluginBase{
         new Config($this->getDataFolder()."config.yml", Config::YAML, $default_values);
 
 	}
-
-	public function onDisable()
+	public function onDisable(): void
     {
         // Prevent memory leaks
         self::$instance = null;
     }
-
 }
